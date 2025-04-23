@@ -1,0 +1,64 @@
+{
+  "team": [
+    {
+      "id": "13e7",
+      "name": "charmeleon",
+      "url": "https://pokeapi.co/api/v2/pokemon/5/"
+    },
+    {
+      "id": "c289",
+      "name": "beedrill",
+      "url": "https://pokeapi.co/api/v2/pokemon/15/"
+    },
+    {
+      "id": "c8c8",
+      "name": "charizard",
+      "url": "https://pokeapi.co/api/v2/pokemon/6/"
+    }
+  ],
+  "favorites": [],
+  "battles": [
+    {
+      "id": "bba8",
+      "player1": "charmander",
+      "player2": "pidgey",
+      "winner": "charmander",
+      "date": "2025-04-21T11:07:11.052Z"
+    },
+    {
+      "id": "7c8b",
+      "player1": "charizard",
+      "player2": "blastoise",
+      "winner": "blastoise",
+      "date": "2025-04-22T07:15:24.362Z"
+    },
+    {
+      "id": "4321",
+      "player1": "venusaur",
+      "player2": "charmeleon",
+      "winner": "venusaur",
+      "date": "2025-04-22T14:24:33.042Z"
+    },
+    {
+      "id": "ea6a",
+      "player1": "charmeleon",
+      "player2": "beedrill",
+      "winner": "beedrill",
+      "date": "2025-04-22T14:25:51.004Z"
+    },
+    {
+      "id": "209a",
+      "player1": "venusaur",
+      "player2": "beedrill",
+      "winner": "venusaur",
+      "date": "2025-04-22T15:53:47.721Z"
+    },
+    {
+      "id": "7c50",
+      "player1": "charmeleon",
+      "player2": "charizard",
+      "winner": "charizard",
+      "date": "2025-04-22T17:09:14.981Z"
+    }
+  ]
+}
