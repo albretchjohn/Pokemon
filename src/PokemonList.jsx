@@ -9,6 +9,7 @@ const PokemonList = ({ team, setTeam }) => {
   const [search, setSearch] = useState("")
   const [selectedPokemon, setSelectedPokemon] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [teamSprites, setTeamSprites] = useState({})
 
   useEffect(() => {
     const fetchPokemon = async () => {
@@ -38,7 +39,7 @@ const PokemonList = ({ team, setTeam }) => {
 
     const fetchTeam = async () => {
       try {
-        const response = await fetch("https://pokemon-916w.onrender.com/team") //http://localhost:3001/team
+        const response = await fetch("https://pokemon-916w.onrender.com/team")
         const data = await response.json()
         setTeam(data)
       } catch (error) {
@@ -49,6 +50,32 @@ const PokemonList = ({ team, setTeam }) => {
     fetchPokemon()
     fetchTeam()
   }, [page, search, setTeam])
+
+  // Fetch sprites for team members
+  useEffect(() => {
+    const fetchTeamSprites = async () => {
+      const sprites = {}
+
+      for (const member of team) {
+        if (!teamSprites[member.name]) {
+          try {
+            const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${member.name}`)
+            const data = await response.json()
+            sprites[member.name] = data.sprites.front_default || data.sprites.other["official-artwork"].front_default
+          } catch (error) {
+            console.error(`Error fetching sprite for ${member.name}:`, error)
+            sprites[member.name] = null
+          }
+        }
+      }
+
+      setTeamSprites((prev) => ({ ...prev, ...sprites }))
+    }
+
+    if (team.length > 0) {
+      fetchTeamSprites()
+    }
+  }, [team])
 
   const addToTeam = async (poke) => {
     if (team.length >= 6) {
@@ -67,6 +94,18 @@ const PokemonList = ({ team, setTeam }) => {
 
       const data = await response.json()
       setTeam([...team, data])
+
+      // Fetch sprite for the newly added Pokémon
+      try {
+        const spriteResponse = await fetch(`https://pokeapi.co/api/v2/pokemon/${poke.name}`)
+        const spriteData = await spriteResponse.json()
+        setTeamSprites((prev) => ({
+          ...prev,
+          [poke.name]: spriteData.sprites.front_default || spriteData.sprites.other["official-artwork"].front_default,
+        }))
+      } catch (error) {
+        console.error(`Error fetching sprite for ${poke.name}:`, error)
+      }
     } catch (error) {
       console.error("Error adding Pokémon to team:", error)
     }
@@ -120,44 +159,43 @@ const PokemonList = ({ team, setTeam }) => {
           </div>
         ) : (
           <div className="bg-white/5 rounded-xl overflow-hidden">
-            {/* <div className="overflow-visible"> */}
             <div className="max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent">
               <table className="min-w-full divide-y divide-white/10">
-              <tbody className="divide-y divide-white/10">
-                  {pokemon.map((p, index) => (
-                    <tr key={index} className="hover:bg-white/10 transition">
-                      <td className="px-4 py-3 whitespace-nowrap flex items-center gap-3">
-                        {/* Add the sprite */}
-                        <img
-                          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.url
-                            .split("/")
-                            .filter(Boolean)
-                            .pop()}.png`}
-                          onError={(e) => (e.target.src = "/Pokemon.jpg")}
-                          alt={p.name}
-                          className="h-8 w-8"
-                        />
-                        <div className="font-medium capitalize">{p.name}</div>
-                      </td>
-                      <td className="px-4 py-3 whitespace-nowrap text-right">
-                        <button
-                          className="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition mr-2"
-                          onClick={() => addToTeam(p)}
-                        >
-                          <PlusCircle className="h-4 w-4 mr-1" />
-                          Add
-                        </button>
-                        <button
-                          className="inline-flex items-center px-3 py-1.5 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition"
-                          onClick={() => viewPokemonDetails(p.name)}
-                        >
-                          <Info className="h-4 w-4 mr-1" />
-                          Details
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
+                <tbody className="divide-y divide-white/10">
+                   {pokemon.map((p, index) => (
+                     <tr key={index} className="hover:bg-white/10 transition">
+                       <td className="px-4 py-3 whitespace-nowrap flex items-center gap-3">
+                         {/* Add the sprite */}
+                         <img
+                           src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${p.url
+                             .split("/")
+                             .filter(Boolean)
+                             .pop()}.png`}
+                           onError={(e) => (e.target.src = "/Pokemon.jpg")}
+                           alt={p.name}
+                           className="h-8 w-8"
+                         />
+                         <div className="font-medium capitalize">{p.name}</div>
+                       </td>
+                       <td className="px-4 py-3 whitespace-nowrap text-right">
+                         <button
+                           className="inline-flex items-center px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium transition mr-2"
+                           onClick={() => addToTeam(p)}
+                         >
+                           <PlusCircle className="h-4 w-4 mr-1" />
+                           Add
+                         </button>
+                         <button
+                           className="inline-flex items-center px-3 py-1.5 bg-purple-600 hover:bg-purple-700 rounded-lg text-sm font-medium transition"
+                           onClick={() => viewPokemonDetails(p.name)}
+                         >
+                           <Info className="h-4 w-4 mr-1" />
+                           Details
+                         </button>
+                       </td>
+                     </tr>
+                   ))}
+               </tbody>
               </table>
             </div>
           </div>
@@ -192,6 +230,7 @@ const PokemonList = ({ team, setTeam }) => {
                 src={
                   selectedPokemon.sprites.other["official-artwork"].front_default ||
                   selectedPokemon.sprites.front_default ||
+                  "/placeholder.svg" ||
                   "/placeholder.svg"
                 }
                 alt={selectedPokemon.name}
@@ -299,9 +338,20 @@ const PokemonList = ({ team, setTeam }) => {
                     />
                   </svg>
                 </button>
-                <div className="h-16 w-16 mx-auto mb-2 bg-white/10 rounded-full flex items-center justify-center">
-                  {/* Placeholder for Pokémon image - in a real app, you'd fetch this */}
-                  <div className="text-2xl">{p.name.charAt(0).toUpperCase()}</div>
+                <div className="h-16 w-16 mx-auto mb-2 bg-white/10 rounded-full flex items-center justify-center overflow-hidden">
+                  {teamSprites[p.name] ? (
+                    <img
+                      src={teamSprites[p.name] || "/placeholder.svg"}
+                      alt={p.name}
+                      className="h-full w-full object-contain"
+                      onError={(e) => {
+                        e.target.onerror = null
+                        e.target.src = "/placeholder.svg"
+                      }}
+                    />
+                  ) : (
+                    <div className="animate-pulse h-full w-full bg-white/20 rounded-full"></div>
+                  )}
                 </div>
                 <div className="capitalize text-sm font-medium truncate">{p.name}</div>
               </div>
