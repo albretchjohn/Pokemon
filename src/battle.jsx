@@ -26,7 +26,7 @@ const simulateBattle = (poke1, poke2) => {
 }
 
 const saveBattleResult = async (poke1, poke2, winner) => {
-  await fetch("http://localhost:3001/battles", {
+  await fetch("https://pokemon-916w.onrender.com/battles", { //http://localhost:3001/battles
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({

@@ -16,12 +16,12 @@ function App() {
       setIsLoading(true)
       try {
         // Fetch team data
-        const teamResponse = await fetch("http://localhost:3001/team")
+        const teamResponse = await fetch("https://pokemon-916w.onrender.com/team") //http://localhost:3001/team
         const teamData = await teamResponse.json()
         setTeam(teamData)
 
         // Fetch battle history
-        const battlesResponse = await fetch("http://localhost:3001/battles")
+        const battlesResponse = await fetch("https://pokemon-916w.onrender.com/battles") //http://localhost:3001/battles
         const battlesData = await battlesResponse.json()
         const sortedBattles = [...battlesData].sort((a, b) => new Date(b.date) - new Date(a.date))
         setBattles(sortedBattles)

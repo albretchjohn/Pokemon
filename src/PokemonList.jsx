@@ -38,7 +38,7 @@ const PokemonList = ({ team, setTeam }) => {
 
     const fetchTeam = async () => {
       try {
-        const response = await fetch("http://localhost:3001/team")
+        const response = await fetch("https://pokemon-916w.onrender.com/team") //http://localhost:3001/team
         const data = await response.json()
         setTeam(data)
       } catch (error) {
@@ -57,7 +57,7 @@ const PokemonList = ({ team, setTeam }) => {
     }
 
     try {
-      const response = await fetch("http://localhost:3001/team", {
+      const response = await fetch("https://pokemon-916w.onrender.com/team", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -74,7 +74,7 @@ const PokemonList = ({ team, setTeam }) => {
 
   const removeFromTeam = async (id) => {
     try {
-      await fetch(`http://localhost:3001/team/${id}`, {
+      await fetch(`https://pokemon-916w.onrender.com/team/${id}`, {
         method: "DELETE",
       })
       setTeam((prevTeam) => prevTeam.filter((p) => p.id !== id))
